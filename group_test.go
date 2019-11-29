@@ -31,7 +31,13 @@ func TestTryTimes(t *testing.T) {
 		return nil
 	}
 	ctx := context.Background()
-	g := NewPool(1, 5).NewGroup().SetTryTimes(3).SetInterval(20 * time.Millisecond)
+	g := NewPool(2, 5).NewGroup().SetConf(&Conf{
+		RTimes:   3,
+		Interval: 100 * time.Millisecond,
+		PanicHD: func(e interface{}) {
+			panic(e)
+		},
+	})
 	g.AddJob(ctx, job1)
 	g.AddJob(ctx, job2)
 	g.AddJob(ctx, job3)
